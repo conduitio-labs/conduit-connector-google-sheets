@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/conduitio/conduit-connector-google-sheets/config"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 )
 
 const (

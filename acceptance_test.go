@@ -24,9 +24,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/conduitio/conduit-connector-google-sheets/config"
-	"github.com/conduitio/conduit-connector-google-sheets/destination"
-	"github.com/conduitio/conduit-connector-google-sheets/source"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"go.uber.org/goleak"
 	"google.golang.org/api/option"

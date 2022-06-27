@@ -21,8 +21,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/conduitio/conduit-connector-google-sheets/sheets"
-	"github.com/conduitio/conduit-connector-google-sheets/source/position"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
 
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"github.com/stretchr/testify/assert"

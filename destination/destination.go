@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/conduitio/conduit-connector-google-sheets/sheets"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 

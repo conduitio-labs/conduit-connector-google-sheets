@@ -20,9 +20,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/conduitio/conduit-connector-google-sheets/sheets"
-	"github.com/conduitio/conduit-connector-google-sheets/source/iterator"
-	"github.com/conduitio/conduit-connector-google-sheets/source/position"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source/iterator"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
 
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )

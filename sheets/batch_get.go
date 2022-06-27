@@ -23,7 +23,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/conduitio/conduit-connector-google-sheets/source/position"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
 
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"golang.org/x/oauth2"

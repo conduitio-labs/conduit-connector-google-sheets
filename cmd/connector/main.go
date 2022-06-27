@@ -16,9 +16,9 @@ limitations under the License.
 package main
 
 import (
-	gs "github.com/conduitio/conduit-connector-google-sheets"
-	"github.com/conduitio/conduit-connector-google-sheets/destination"
-	"github.com/conduitio/conduit-connector-google-sheets/source"
+	gs "github.com/conduitio-labs/conduit-connector-google-sheets"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
