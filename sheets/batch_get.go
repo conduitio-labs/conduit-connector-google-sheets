@@ -20,16 +20,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/api/sheets/v4"
 	"net/http"
 	"time"
 
-	"github.com/conduitio/conduit-connector-google-sheets/source/position"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
 
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
 )
 
 const majorDimension = "ROWS"

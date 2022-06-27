@@ -1,4 +1,4 @@
-module github.com/conduitio/conduit-connector-google-sheets
+module github.com/conduitio-labs/conduit-connector-google-sheets
 
 go 1.18
 
