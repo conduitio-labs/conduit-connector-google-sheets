@@ -17,9 +17,6 @@ limitations under the License.
 package googlesheets
 
 import (
-	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
-	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
-	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
@@ -31,74 +28,5 @@ func Specification() sdk.Specification {
 		Description: "A plugin capable of fetching records (in JSON format) from google spreadsheet.",
 		Version:     "v0.1.0",
 		Author:      "Gophers Lab Technologies Pvt Ltd",
-		DestinationParams: map[string]sdk.Parameter{
-			config.KeyCredentialsFile: {
-				Default:     "",
-				Required:    true,
-				Description: "path to credentials.json file used",
-			},
-			config.KeyTokensFile: {
-				Default:     "",
-				Required:    true,
-				Description: "path to token.json file containing a json with at least refresh_token.",
-			},
-			config.KeySheetURL: {
-				Default:     "",
-				Required:    true,
-				Description: "Google sheet url to fetch the records from",
-			},
-			destination.KeySheetName: {
-				Default:     "",
-				Required:    true,
-				Description: "Google sheet name to fetch the records",
-			},
-			destination.KeyValueInputOption: {
-				Default:     "USER_ENTERED",
-				Required:    false,
-				Description: "Whether the data be inserted in USER_ENTERED mode or RAW mode",
-			},
-			destination.KeyMaxRetries: {
-				Default:     "3",
-				Required:    false,
-				Description: "Max API retries to be attempted, in case of 429 error, before returning error",
-			},
-			destination.KeyBufferSize: {
-				Default:     "100",
-				Required:    false,
-				Description: "max rows to be appended in one API call",
-			},
-		},
-		SourceParams: map[string]sdk.Parameter{
-			config.KeyCredentialsFile: {
-				Default:     "",
-				Required:    true,
-				Description: "path to credentials.json file used",
-			},
-			config.KeyTokensFile: {
-				Default:     "",
-				Required:    true,
-				Description: "path to token.json file containing a json with atleast refresh_token.",
-			},
-			config.KeySheetURL: {
-				Default:     "",
-				Required:    true,
-				Description: "Google sheet url to fetch the records from",
-			},
-			source.KeyPollingPeriod: {
-				Default:     "6s",
-				Required:    false,
-				Description: "Time interval for consecutive fetching data.",
-			},
-			source.KeyDateTimeRenderOption: {
-				Default:     "FORMATTED_STRING",
-				Required:    false,
-				Description: "Format of the Date/time related values. Valid values: SERIAL_NUMBER, FORMATTED_STRING",
-			},
-			source.KeyValueRenderOption: {
-				Default:     "FORMATTED_VALUE",
-				Required:    false,
-				Description: "Format of the dynamic/reference data. Valid values: FORMATTED_VALUE, UNFORMATTED_VALUE, FORMULA",
-			},
-		},
 	}
 }

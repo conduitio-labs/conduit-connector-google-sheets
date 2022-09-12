@@ -1,3 +1,5 @@
+GOLINT := golangci-lint
+
 .PHONY: build test
 
 build:
@@ -7,3 +9,5 @@ build:
 test:
 	go test $(GOTEST_FLAGS) -race ./...
 
+lint:
+	$(GOLINT) run --timeout=5m -c .golangci.yml

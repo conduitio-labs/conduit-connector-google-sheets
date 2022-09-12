@@ -68,21 +68,21 @@ func NewWriter(
 }
 
 // Write function writes the records to google sheet
-func (w *Writer) Write(ctx context.Context, records []sdk.Record) error {
+func (w *Writer) Write(ctx context.Context, records []sdk.Record) (int, error) {
 	var rows [][]interface{}
 
 	// Looping on every record and unmarshalling to google-sheet format.
 	// Row format: [val1, val2, ...]
 	for index, rowRecord := range records {
 		rowArr := make([]interface{}, 0)
-		err := json.Unmarshal(rowRecord.Payload.Bytes(), &rowArr)
+		err := json.Unmarshal(rowRecord.Payload.After.Bytes(), &rowArr)
 		if err != nil {
-			return fmt.Errorf("unable to marshal the record(index:%d) %w", index, err)
+			return index, fmt.Errorf("unable to marshal the record(index:%d) %w", index, err)
 		}
 		rows = append(rows, rowArr)
 	}
 	if len(rows) == 0 {
-		return nil
+		return 0, nil
 	}
 	// KeyValueInputOption is the config name for how the input data
 	// should be interpreted.
@@ -103,20 +103,22 @@ func (w *Writer) Write(ctx context.Context, records []sdk.Record) error {
 		// retry mechanism, in case of rate limit exceeded error (429)
 		if gerr, ok := err.(*googleapi.Error); ok && gerr.Code == http.StatusTooManyRequests {
 			if w.retryCount >= w.maxRetries {
-				return fmt.Errorf("rate limit exceeded, retries: %d, error: %w", w.retryCount, err)
+				return 0, fmt.Errorf("rate limit exceeded, retries: %d, error: %w", w.retryCount, err)
 			}
 			w.retryCount++
 			// if retry count doesn't exceed maxRetries, retry with exponential back off
 			// block till write either succeeds or all retries are exhausted
 			select {
 			case <-ctx.Done():
-				return ctx.Err()
+				return 0, ctx.Err()
 			case <-time.After(time.Duration(w.retryCount) * time.Second): // exponential back off
 				return w.Write(ctx, records)
 			}
 		}
-		return fmt.Errorf("appending rows to sheet(%s) failed: %w", w.sheetName, err)
+		return 0, fmt.Errorf("appending rows to sheet(%s) failed: %w", w.sheetName, err)
 	}
+
 	w.retryCount = 0
-	return nil
+
+	return len(records), nil
 }

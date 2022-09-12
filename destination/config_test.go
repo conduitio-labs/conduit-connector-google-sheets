@@ -1,4 +1,5 @@
-/* Copyright © 2022 Meroxa, Inc. & Gophers Lab Technologies Pvt. Ltd.
+/*
+Copyright © 2022 Meroxa, Inc. & Gophers Lab Technologies Pvt. Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package destination
 
 import (
@@ -21,8 +23,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 )
 
 type destTestCase []struct {
@@ -51,7 +54,6 @@ func TestParse(t *testing.T) {
 				config.KeySheetURL:        "",
 				KeySheetName:              "Sheet",
 				KeyValueInputOption:       "",
-				KeyBufferSize:             "",
 			},
 			err:      fmt.Errorf("error parsing shared config, \"sheetsURL\" config value must be set"),
 			expected: Config{},
@@ -64,7 +66,6 @@ func TestParse(t *testing.T) {
 				config.KeySheetURL:        "https://docs.google.com/spreadsheets/d/19VVe4M-j8MGw-a3B7fcJQnx5JnHjiHf9dwChUkqQ4/edit#gid=158080911",
 				KeySheetName:              "",
 				KeyValueInputOption:       "",
-				KeyBufferSize:             "10",
 			},
 			err:      fmt.Errorf("\"sheetName\" config value must be set"),
 			expected: Config{},
@@ -77,7 +78,6 @@ func TestParse(t *testing.T) {
 				config.KeySheetURL:        "https://docs.google.com/spreadsheets/d/19VVe4M-j8MGw-a3B7fcJQnx5JnHjiHf9dwChUkqQ4/edit#gid=158080911",
 				KeySheetName:              "Sheet",
 				KeyValueInputOption:       "",
-				KeyBufferSize:             "",
 			},
 			err: nil,
 			expected: Config{
@@ -87,7 +87,6 @@ func TestParse(t *testing.T) {
 				},
 				SheetName:        "Sheet",
 				ValueInputOption: defaultValueInputOption,
-				BufferSize:       100,
 				MaxRetries:       3,
 			},
 		},
@@ -109,7 +108,6 @@ func TestParse(t *testing.T) {
 				},
 				SheetName:        "Sheet",
 				ValueInputOption: "RAW",
-				BufferSize:       100,
 				MaxRetries:       5,
 			},
 		},
@@ -121,7 +119,6 @@ func TestParse(t *testing.T) {
 				config.KeySheetURL:        "https://docs.google.com/spreadsheets/d/19VVe4M-j8MGw-a3B7fcJQnx5JnHjiHf9dwChUkqQ4/edit#gid=158080911",
 				KeySheetName:              "Sheet",
 				KeyValueInputOption:       "USER_ENTERED",
-				KeyBufferSize:             "10",
 			},
 			err: nil,
 			expected: Config{
@@ -131,7 +128,6 @@ func TestParse(t *testing.T) {
 				},
 				SheetName:        "Sheet",
 				ValueInputOption: defaultValueInputOption,
-				BufferSize:       10,
 				MaxRetries:       3,
 			},
 		},

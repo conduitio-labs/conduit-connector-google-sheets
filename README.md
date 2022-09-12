@@ -124,10 +124,6 @@ If parsing was not successful, then an error will occur. After that, the `Open` 
 ### Google Sheet Writer
 
 The writer writes data to destination by appending data to the next row.
-The destination writer maintains a configurable buffer(default length is 100), for each time `WriteAsync` is called, a new record is added to the buffer.
-The `bufferSize` is configurable and the max value, the buffer can be is 100, minimum it could be 1.
-Once the buffer is full(as per the configured value), all the records from it will be written/appended to the last row of google sheets and an ack function will be called for each record after being written.
-
 
 ### Configuration
 
@@ -142,7 +138,6 @@ The config passed to `Configure` in destination connector can contain the follow
 | `sheetName`        | Sheet name on which the data is to be appended.                                                                                    | yes       | "sheetName"                                                              |
 | `valueInputOption` | Whether the data should be parsed, similar to adding data from browser, or as a raw string. Values: "RAW", "USER_ENTERED"(default) | no        | "USER_ENTERED"                                                           |
 | `maxRetries`       | Number of API retries to be made, in case of rate-limit error, before returning an error. Default: 3                               | no       | "3"                                                                      |
-| `bufferSize`       | Minumun number of records in buffer to hit the google sheet api. Default buffer size is 100                                        | no       | "100"                                                                    |
 
 ### Known Limitations
 

@@ -19,3 +19,6 @@ main
 # vendor/
 .idea
 .vscode
+
+# creds
+credentials.json
