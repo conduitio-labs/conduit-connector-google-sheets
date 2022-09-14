@@ -1,4 +1,5 @@
-/* Copyright © 2022 Meroxa, Inc. & Gophers Lab Technologies Pvt. Ltd.
+/*
+Copyright © 2022 Meroxa, Inc. & Gophers Lab Technologies Pvt. Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package source
 
 import (
@@ -22,8 +24,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 )
 
 type sourceTestCase []struct {

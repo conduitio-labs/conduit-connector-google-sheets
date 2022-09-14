@@ -152,13 +152,13 @@ func (b *BatchReader) valueRangesToRecords(valueRanges []*sheets.MatchedValueRan
 				SheetID:       b.sheetID,
 			}
 
-			records = append(records, sdk.Record{
-				Position:  lastRowPosition.RecordPosition(),
-				Metadata:  nil,
-				CreatedAt: time.Now(),
-				Key:       sdk.RawData(fmt.Sprintf("%d", rowOffset)),
-				Payload:   sdk.RawData(rawData),
-			})
+			metadata := sdk.Metadata{}
+			metadata.SetCreatedAt(time.Now())
+
+			record := sdk.Util.Source.NewRecordSnapshot(lastRowPosition.RecordPosition(), metadata,
+				sdk.RawData(fmt.Sprintf("%d", rowOffset)), sdk.RawData(rawData))
+
+			records = append(records, record)
 		}
 	}
 	return records, nil

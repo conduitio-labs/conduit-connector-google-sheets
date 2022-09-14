@@ -13,18 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package main
 
 import (
-	gs "github.com/conduitio-labs/conduit-connector-google-sheets"
-	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
-	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
 	sdk "github.com/conduitio/conduit-connector-sdk"
+
+	gs "github.com/conduitio-labs/conduit-connector-google-sheets"
 )
 
 func main() {
-	sdk.Serve(sdk.Connector{
-		NewSpecification: gs.Specification,
-		NewSource:        source.NewSource,
-		NewDestination:   destination.NewDestination})
+	sdk.Serve(gs.Connector)
 }
