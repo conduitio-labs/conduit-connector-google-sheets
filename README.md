@@ -43,7 +43,9 @@ Note: The following scopes are mandatory to be addded to access Google Sheets AP
 1. https://www.googleapis.com/auth/spreadsheets.readonly	
 2. https://www.googleapis.com/auth/spreadsheets
 
-After the credentials.json is generated, download the json file and place it inside your root project. To generate token file(i.e token_UnixTimeStamp.json),
+After the credentials json is generated, download the json file and place it inside your root project. Rename this file 
+to `credentials.json`.
+To generate token file(i.e token_UnixTimeStamp.json),
 run `./google-token-gen` from the root project. A browser window will open, to verify the gmail account followed by the consent page.
 
 Once successful, you will get the following message:

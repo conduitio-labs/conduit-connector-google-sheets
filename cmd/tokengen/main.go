@@ -33,9 +33,7 @@ import (
 	"sync"
 	"time"
 
-	sdk "github.com/conduitio/conduit-connector-sdk"
-
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -52,13 +50,10 @@ var (
 	port                  string
 	host                  string
 	workingDirectory      string
-	log                   *zerolog.Logger
 	authCode              string
 )
 
 func init() {
-	log = sdk.Logger(context.Background())
-
 	var err error
 	workingDirectory, err = os.Getwd()
 	if err != nil {
@@ -80,7 +75,7 @@ func init() {
 func main() {
 	credBytes, err := ioutil.ReadFile(defaultCredentialFile)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Unable to read client secret file")
+		log.Fatal().Err(err).Msg("Unable to read credentials.json file")
 	}
 
 	// get config from JSON
