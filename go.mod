@@ -5,8 +5,8 @@ go 1.18
 require (
 	github.com/conduitio/conduit-connector-sdk v0.2.1-0.20220823112121-47067cda967a
 	github.com/rs/zerolog v1.27.0
-	github.com/stretchr/testify v1.7.5
-	go.uber.org/goleak v1.1.12
+	github.com/stretchr/testify v1.8.0
+	go.uber.org/goleak v1.2.0
 	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb
 	google.golang.org/api v0.85.0
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
