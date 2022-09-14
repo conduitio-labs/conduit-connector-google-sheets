@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	sdk "github.com/conduitio/conduit-connector-sdk"
@@ -69,24 +70,41 @@ func NewWriter(
 
 // Write function writes the records to google sheet
 func (w *Writer) Write(ctx context.Context, records []sdk.Record) (int, error) {
-	var rows [][]interface{}
+	rows := make([][]any, 0)
 
-	// Looping on every record and unmarshalling to google-sheet format.
-	// Row format: [val1, val2, ...]
-	for index, rowRecord := range records {
-		rowArr := make([]interface{}, 0)
-		err := json.Unmarshal(rowRecord.Payload.After.Bytes(), &rowArr)
-		if err != nil {
-			return index, fmt.Errorf("unable to marshal the record(index:%d) %w", index, err)
+	for i := range records {
+		var (
+			row []any
+			err error
+		)
+
+		// destination connector doesn't support update or delete operations.
+		if records[i].Operation == sdk.OperationDelete || records[i].Operation == sdk.OperationUpdate {
+			continue
 		}
-		rows = append(rows, rowArr)
+
+		// transform from map to row.
+		row, err = transformRecordToRow(records[i])
+		if err != nil {
+			sdk.Logger(ctx).Debug().Err(err)
+
+			// check if payload is slice.
+			row, err = transformFromRow(records[i].Payload.After)
+			if err != nil {
+				return i, err
+			}
+		}
+
+		rows = append(rows, row)
 	}
 	if len(rows) == 0 {
 		return 0, nil
 	}
+
 	// KeyValueInputOption is the config name for how the input data
 	// should be interpreted.
 	// Creating a google-sheet format to append to google-sheet
+
 	sheetValueFormat := &sheets.ValueRange{
 		MajorDimension: majorDimension,
 		Range:          w.sheetName,
@@ -121,4 +139,56 @@ func (w *Writer) Write(ctx context.Context, records []sdk.Record) (int, error) {
 	w.retryCount = 0
 
 	return len(records), nil
+}
+
+func transformFromRow(data sdk.Data) ([]any, error) {
+	rowArr := make([]interface{}, 0)
+
+	err := json.Unmarshal(data.Bytes(), &rowArr)
+	if err != nil {
+		return rowArr, fmt.Errorf("unable to marshal the record: %w", err)
+	}
+
+	return rowArr, nil
+}
+
+func transformRecordToRow(record sdk.Record) ([]any, error) {
+	data, err := structurizeData(record.Payload.After)
+	if err != nil {
+		return nil, fmt.Errorf("structurize data: %w", err)
+	}
+
+	if data == nil {
+		return nil, ErrEmptyPayload
+	}
+
+	// sort by keys
+	keys := make([]string, 0, len(data))
+
+	for k := range data {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
+	row := make([]any, 0)
+	for _, k := range keys {
+		row = append(row, data[k])
+	}
+
+	return row, err
+}
+
+// structurizeData converts sdk.Data to sdk.StructuredData.
+func structurizeData(data sdk.Data) (sdk.StructuredData, error) {
+	if data == nil || len(data.Bytes()) == 0 {
+		return nil, nil
+	}
+
+	structuredData := make(sdk.StructuredData)
+	if err := json.Unmarshal(data.Bytes(), &structuredData); err != nil {
+		return nil, fmt.Errorf("unmarshal data into structured data: %w", err)
+	}
+
+	return structuredData, nil
 }

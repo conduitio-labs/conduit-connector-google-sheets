@@ -119,11 +119,12 @@ The config passed to `Configure` in source connector can contain the following f
 The Google Sheet Destination connector connects to the provided Google SheetID with the provided configurations,
 using `credentialsFile`, `tokensFile`, `sheetsURL` and `sheetName`.  Then will call `Configure` to parse the configurations.
 If parsing was not successful, then an error will occur. After that, the `Open` method is called to start the connection.
+The Destination connector doesn't support delete or update operations.
 
 
 ### Google Sheet Writer
 
-The writer writes data to destination by appending data to the next row.
+The writer writes data to destination by appending data to the next row. 
 
 ### Configuration
 
