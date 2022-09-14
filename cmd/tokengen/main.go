@@ -117,7 +117,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := http.ListenAndServe(host+":"+port, nil)
+		err = http.ListenAndServe(host+":"+port, nil) // nolint:gosec,nolintlint
 		if err != nil {
 			log.Error().Err(err).Msg("http listen and server stopped")
 		}
