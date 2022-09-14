@@ -3,8 +3,8 @@ module github.com/conduitio-labs/conduit-connector-google-sheets
 go 1.18
 
 require (
-	github.com/conduitio/conduit-connector-sdk v0.2.1-0.20220823112121-47067cda967a
-	github.com/rs/zerolog v1.27.0
+	github.com/conduitio/conduit-connector-sdk v0.2.1-0.20220907174025-4652ba056469
+	github.com/rs/zerolog v1.28.0
 	github.com/stretchr/testify v1.8.0
 	go.uber.org/goleak v1.2.0
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
