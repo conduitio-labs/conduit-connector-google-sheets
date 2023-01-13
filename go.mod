@@ -3,7 +3,7 @@ module github.com/conduitio-labs/conduit-connector-google-sheets
 go 1.18
 
 require (
-	github.com/conduitio/conduit-connector-sdk v0.4.0
+	github.com/conduitio/conduit-connector-sdk v0.4.3
 	github.com/rs/zerolog v1.28.0
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/goleak v1.2.0
