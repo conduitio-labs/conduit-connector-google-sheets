@@ -6,7 +6,7 @@ require (
 	github.com/conduitio/conduit-connector-sdk v0.4.0
 	github.com/rs/zerolog v1.28.0
 	github.com/stretchr/testify v1.8.1
-	go.uber.org/goleak v1.2.0
+	go.uber.org/goleak v1.2.1
 	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
 	google.golang.org/api v0.105.0
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
