@@ -75,7 +75,7 @@ func (d *Destination) Parameters() map[string]sdk.Parameter {
 }
 
 // Configure parses and initializes the config.
-func (d *Destination) Configure(ctx context.Context,
+func (d *Destination) Configure(_ context.Context,
 	cfg map[string]string) error {
 	sheetsConfig, err := Parse(cfg)
 	if err != nil {
@@ -121,7 +121,7 @@ func (d *Destination) Write(ctx context.Context, records []sdk.Record) (int, err
 }
 
 // Teardown writes all the pending records to sheets and gracefully disconnects the client
-func (d *Destination) Teardown(ctx context.Context) error {
+func (d *Destination) Teardown(_ context.Context) error {
 	d.writer = nil
 
 	return nil
