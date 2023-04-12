@@ -1,18 +1,17 @@
-/*
-Copyright © 2022 Meroxa, Inc. & Gophers Lab Technologies Pvt. Ltd.
+// Copyright © 2022 Meroxa, Inc. & Gophers Lab Technologies Pvt. Ltd.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package googlesheets
 
 import (
@@ -161,13 +160,14 @@ type AcceptanceTestDriver struct {
 // GenerateRecord overrides the pre-defined generate record function to generate the records in required google sheets compatible format
 // It generates payload with 4 column row as payload
 // Sample Record:
-// {
-//      "metadata": null,
-//		"position": "{\"row_offset\":1, \"spreadsheet_id\":\"some_id\", \"sheet_id\":123}"
-//      "created_at": "0001-01-01 00:00:00 +0000 UTC",
-//      "key": 123,
-//      "payload": "[\"a\",\"b\",\"c\",\"d\"]"
-//}
+//
+//	{
+//	     "metadata": null,
+//			"position": "{\"row_offset\":1, \"spreadsheet_id\":\"some_id\", \"sheet_id\":123}"
+//	     "created_at": "0001-01-01 00:00:00 +0000 UTC",
+//	     "key": 123,
+//	     "payload": "[\"a\",\"b\",\"c\",\"d\"]"
+//	}
 func (d AcceptanceTestDriver) GenerateRecord(*testing.T) sdk.Record {
 	payload := fmt.Sprintf(`["%s","%s","%s","%s"]`, d.randString(32), d.randString(32), d.randString(32), d.randString(32))
 	offset++
