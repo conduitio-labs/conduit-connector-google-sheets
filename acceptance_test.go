@@ -24,14 +24,10 @@ import (
 	"time"
 
 	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
-	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
-	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"go.uber.org/goleak"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
-
-	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 )
 
 var (
