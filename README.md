@@ -43,7 +43,9 @@ Note: The following scopes are mandatory to be addded to access Google Sheets AP
 1. https://www.googleapis.com/auth/spreadsheets.readonly	
 2. https://www.googleapis.com/auth/spreadsheets
 
-After the credentials.json is generated, download the json file and place it inside your root project. To generate token file(i.e token_UnixTimeStamp.json),
+After the credentials json is generated, download the json file and place it inside your root project. Rename this file 
+to `credentials.json`.
+To generate token file(i.e token_UnixTimeStamp.json),
 run `./google-token-gen` from the root project. A browser window will open, to verify the gmail account followed by the consent page.
 
 Once successful, you will get the following message:
@@ -119,15 +121,12 @@ The config passed to `Configure` in source connector can contain the following f
 The Google Sheet Destination connector connects to the provided Google SheetID with the provided configurations,
 using `credentialsFile`, `tokensFile`, `sheetsURL` and `sheetName`.  Then will call `Configure` to parse the configurations.
 If parsing was not successful, then an error will occur. After that, the `Open` method is called to start the connection.
+The Destination connector doesn't support delete or update operations.
 
 
 ### Google Sheet Writer
 
-The writer writes data to destination by appending data to the next row.
-The destination writer maintains a configurable buffer(default length is 100), for each time `WriteAsync` is called, a new record is added to the buffer.
-The `bufferSize` is configurable and the max value, the buffer can be is 100, minimum it could be 1.
-Once the buffer is full(as per the configured value), all the records from it will be written/appended to the last row of google sheets and an ack function will be called for each record after being written.
-
+The writer writes data to destination by appending data to the next row. 
 
 ### Configuration
 
@@ -142,7 +141,6 @@ The config passed to `Configure` in destination connector can contain the follow
 | `sheetName`        | Sheet name on which the data is to be appended.                                                                                    | yes       | "sheetName"                                                              |
 | `valueInputOption` | Whether the data should be parsed, similar to adding data from browser, or as a raw string. Values: "RAW", "USER_ENTERED"(default) | no        | "USER_ENTERED"                                                           |
 | `maxRetries`       | Number of API retries to be made, in case of rate-limit error, before returning an error. Default: 3                               | no       | "3"                                                                      |
-| `bufferSize`       | Minumun number of records in buffer to hit the google sheet api. Default buffer size is 100                                        | no       | "100"                                                                    |
 
 ### Known Limitations
 

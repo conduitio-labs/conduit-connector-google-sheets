@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/iterator"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
@@ -41,6 +42,42 @@ type Iterator interface {
 
 func NewSource() sdk.Source {
 	return &Source{}
+}
+
+// Parameters returns a map of named sdk.Parameters that describe how to configure the Source.
+func (s *Source) Parameters() map[string]sdk.Parameter {
+	return map[string]sdk.Parameter{
+		config.KeyCredentialsFile: {
+			Default:     "",
+			Required:    true,
+			Description: "path to credentials.json file used",
+		},
+		config.KeyTokensFile: {
+			Default:     "",
+			Required:    true,
+			Description: "path to token.json file containing a json with atleast refresh_token.",
+		},
+		config.KeySheetURL: {
+			Default:     "",
+			Required:    true,
+			Description: "Google sheet url to fetch the records from",
+		},
+		KeyPollingPeriod: {
+			Default:     "6s",
+			Required:    false,
+			Description: "Time interval for consecutive fetching data.",
+		},
+		KeyDateTimeRenderOption: {
+			Default:     "FORMATTED_STRING",
+			Required:    false,
+			Description: "Format of the Date/time related values. Valid values: SERIAL_NUMBER, FORMATTED_STRING",
+		},
+		KeyValueRenderOption: {
+			Default:     "FORMATTED_VALUE",
+			Required:    false,
+			Description: "Format of the dynamic/reference data. Valid values: FORMATTED_VALUE, UNFORMATTED_VALUE, FORMULA",
+		},
+	}
 }
 
 // Configure validates the passed config and prepares the source connector

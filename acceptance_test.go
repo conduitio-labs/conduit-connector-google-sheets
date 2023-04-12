@@ -30,6 +30,8 @@ import (
 	"go.uber.org/goleak"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
+
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 )
 
 var (
@@ -55,8 +57,7 @@ func TestAcceptance(t *testing.T) {
 		}
 		credFilePath = credFile.Name()
 	} else {
-		t.Error("credentials not set in env CONDUIT_GOOGLE_CREDENTIAL_JSON")
-		t.FailNow()
+		t.Skip("credentials not set in env CONDUIT_GOOGLE_CREDENTIAL_JSON")
 	}
 
 	tokenJSON := strings.TrimSpace(os.Getenv("CONDUIT_GOOGLE_TOKEN_JSON"))
@@ -132,11 +133,7 @@ func TestAcceptance(t *testing.T) {
 		rand: rand.New(rand.NewSource(time.Now().UnixNano())), //nolint: gosec // only used for testing
 		ConfigurableAcceptanceTestDriver: sdk.ConfigurableAcceptanceTestDriver{
 			Config: sdk.ConfigurableAcceptanceTestDriverConfig{
-				Connector: sdk.Connector{
-					NewSpecification: Specification,
-					NewSource:        source.NewSource,
-					NewDestination:   destination.NewDestination,
-				},
+				Connector:         Connector,
 				SourceConfig:      sourceConfig,
 				DestinationConfig: destConfig,
 				BeforeTest: func(t *testing.T) {
@@ -157,26 +154,19 @@ type AcceptanceTestDriver struct {
 	sdk.ConfigurableAcceptanceTestDriver
 }
 
-// GenerateRecord overrides the pre-defined generate record function to generate the records in required google sheets compatible format
-// It generates payload with 4 column row as payload
-// Sample Record:
-//
-//	{
-//	     "metadata": null,
-//			"position": "{\"row_offset\":1, \"spreadsheet_id\":\"some_id\", \"sheet_id\":123}"
-//	     "created_at": "0001-01-01 00:00:00 +0000 UTC",
-//	     "key": 123,
-//	     "payload": "[\"a\",\"b\",\"c\",\"d\"]"
-//	}
-func (d AcceptanceTestDriver) GenerateRecord(*testing.T) sdk.Record {
-	payload := fmt.Sprintf(`["%s","%s","%s","%s"]`, d.randString(32), d.randString(32), d.randString(32), d.randString(32))
+// GenerateRecord overrides the pre-defined generate record function to generate the
+// records in required google sheets compatible format.
+func (d AcceptanceTestDriver) GenerateRecord(*testing.T, sdk.Operation) sdk.Record {
+	payload := fmt.Sprintf(`["%s","%s","%s","%s"]`, d.randString(32), d.randString(32),
+		d.randString(32), d.randString(32))
 	offset++
 	return sdk.Record{
-		Position:  sdk.Position(fmt.Sprintf(`{"row_offset":%v, "spreadsheet_id":%v, "sheet_id":%v}`, offset, spreadsheetID, sheetID)),
-		Metadata:  nil,
-		CreatedAt: time.Time{},
-		Key:       sdk.RawData(fmt.Sprintf("%v", offset)),
-		Payload:   sdk.RawData(payload),
+		Operation: sdk.OperationSnapshot,
+		Position: sdk.Position(fmt.Sprintf(`{"row_offset":%v, "spreadsheet_id":%v, "sheet_id":%v}`, offset,
+			spreadsheetID, sheetID)),
+		Metadata: nil,
+		Key:      sdk.RawData(fmt.Sprintf("%v", offset)),
+		Payload:  sdk.Change{After: sdk.RawData(payload)},
 	}
 }
 

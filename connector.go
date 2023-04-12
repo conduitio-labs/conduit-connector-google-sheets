@@ -18,20 +18,13 @@ package googlesheets
 
 import (
 	sdk "github.com/conduitio/conduit-connector-sdk"
+
+	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
+	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
 )
 
-// version is set during the build process (i.e. the Makefile).
-// It follows Go's convention for module version, where the version
-// starts with the letter v, followed by a semantic version.
-var version = "v0.0.0-dev"
-
-// Specification returns the Plugin's Specification.
-func Specification() sdk.Specification {
-	return sdk.Specification{
-		Name:        "google-sheets",
-		Summary:     "Google Sheets plugin",
-		Description: "A plugin capable of fetching records (in JSON format) from google spreadsheet.",
-		Version:     version,
-		Author:      "Gophers Lab Technologies Pvt Ltd",
-	}
+var Connector = sdk.Connector{
+	NewSpecification: Specification,
+	NewSource:        source.NewSource,
+	NewDestination:   destination.NewDestination,
 }

@@ -30,10 +30,13 @@ import (
 
 func TestWriter_NoRecord(t *testing.T) {
 	ctx := context.Background()
+
 	writer, err := NewWriter(ctx, &oauth2.Config{}, &oauth2.Token{}, "dummy_spreadsheet_id", "Sheet", "", 3)
 	assert.NoError(t, err)
-	err = writer.Write(ctx, nil)
+
+	i, err := writer.Write(ctx, nil)
 	assert.NoError(t, err)
+	assert.Equal(t, 0, i)
 }
 
 func TestWriter_Succeeds(t *testing.T) {
@@ -45,21 +48,27 @@ func TestWriter_Succeeds(t *testing.T) {
 		resp:       []byte(`{}`),
 		header:     header,
 	}
+
 	testServer := httptest.NewServer(th)
+
 	sheetSvc, err := sheets.NewService(
 		context.Background(),
 		option.WithEndpoint(testServer.URL),
 		option.WithHTTPClient(&http.Client{}))
 	assert.NoError(t, err)
+
 	ctx := context.Background()
+
 	writer := &Writer{
 		sheetSvc:         sheetSvc,
 		sheetName:        "sheet",
 		spreadsheetID:    "dummy",
 		valueInputOption: "USER_ENTERED",
 	}
-	err = writer.Write(ctx, []sdk.Record{{Payload: sdk.RawData(`["1","2","3","4"]`)}})
+
+	i, err := writer.Write(ctx, []sdk.Record{{Payload: sdk.Change{After: sdk.RawData(`["1","2","3","4"]`)}}})
 	assert.NoError(t, err)
+	assert.Equal(t, 1, i)
 }
 
 func TestWriter_429(t *testing.T) {
@@ -85,6 +94,7 @@ func TestWriter_429(t *testing.T) {
 		valueInputOption: "USER_ENTERED",
 		maxRetries:       2,
 	}
-	err = writer.Write(ctx, []sdk.Record{{Payload: sdk.RawData(`["1","2","3","4"]`)}})
+	i, err := writer.Write(ctx, []sdk.Record{{Payload: sdk.Change{After: sdk.RawData(`["1","2","3","4"]`)}}})
 	assert.EqualError(t, err, "rate limit exceeded, retries: 2, error: googleapi: got HTTP response code 429 with body: {}")
+	assert.Equal(t, 0, i)
 }

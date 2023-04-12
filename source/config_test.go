@@ -22,8 +22,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 )
 
 type sourceTestCase []struct {

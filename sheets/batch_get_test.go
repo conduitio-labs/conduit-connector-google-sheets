@@ -75,7 +75,7 @@ func TestBatchReader_valueRangesToRecords(t *testing.T) {
 	in := []*sheets.MatchedValueRange{{ValueRange: &sheets.ValueRange{
 		MajorDimension: "ROWS",
 		Range:          "Sheet1!A11:Z2870",
-		Values: [][]interface{}{
+		Values: [][]any{
 			{"iqmQgVHVFVpPvpDE0byR5p1T5PUp2cI1", "UB3Io7g5OotmBHfcm77CHeGQ5PoZeYp1", "mZTcV547WwIwHROkNAT9x8yEGiV4ne8z", "FB6VpQxEUwEm8mGYePvJhnO8gtbVEmsC"},
 			{"bE7DlmbAEvHpxSmKJrVNL56lH2RkD6Cj", "TpDm60cyptSfI2vRX1NgoHFxxAKBjFRB", "B3iRkGlbFCu2A8Hy3d0Ln6TqU0HO8rTT", "lTDJbi7FZPu9OrpFsz14X6msCdONz9a2"},
 		}}}}
@@ -88,21 +88,26 @@ func TestBatchReader_valueRangesToRecords(t *testing.T) {
 	}
 	out, err := br.valueRangesToRecords(in, 10)
 	assert.NoError(t, err)
+
 	want := []sdk.Record{
 		{
-			Position: sdk.Position(`{"row_offset":11,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
-			Key:      sdk.RawData(`11`),
-			Payload:  sdk.RawData(`["iqmQgVHVFVpPvpDE0byR5p1T5PUp2cI1","UB3Io7g5OotmBHfcm77CHeGQ5PoZeYp1","mZTcV547WwIwHROkNAT9x8yEGiV4ne8z","FB6VpQxEUwEm8mGYePvJhnO8gtbVEmsC"]`),
+
+			Operation: sdk.OperationSnapshot,
+			Position:  sdk.Position(`{"row_offset":11,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
+			Key:       sdk.RawData(`11`),
+			Payload:   sdk.Change{After: sdk.RawData(`["iqmQgVHVFVpPvpDE0byR5p1T5PUp2cI1","UB3Io7g5OotmBHfcm77CHeGQ5PoZeYp1","mZTcV547WwIwHROkNAT9x8yEGiV4ne8z","FB6VpQxEUwEm8mGYePvJhnO8gtbVEmsC"]`)},
 		}, {
-			Position: sdk.Position(`{"row_offset":12,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
-			Key:      sdk.RawData(`12`),
-			Payload:  sdk.RawData(`["bE7DlmbAEvHpxSmKJrVNL56lH2RkD6Cj","TpDm60cyptSfI2vRX1NgoHFxxAKBjFRB","B3iRkGlbFCu2A8Hy3d0Ln6TqU0HO8rTT","lTDJbi7FZPu9OrpFsz14X6msCdONz9a2"]`),
+
+			Operation: sdk.OperationSnapshot,
+			Position:  sdk.Position(`{"row_offset":12,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
+			Key:       sdk.RawData(`12`),
+			Payload:   sdk.Change{After: sdk.RawData(`["bE7DlmbAEvHpxSmKJrVNL56lH2RkD6Cj","TpDm60cyptSfI2vRX1NgoHFxxAKBjFRB","B3iRkGlbFCu2A8Hy3d0Ln6TqU0HO8rTT","lTDJbi7FZPu9OrpFsz14X6msCdONz9a2"]`)},
 		},
 	}
 	for i := range out {
-		out[i].CreatedAt = time.Time{}
 		out[i].Metadata = nil
 	}
+
 	assert.Equal(t, want, out)
 }
 
