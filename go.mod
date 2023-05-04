@@ -8,7 +8,7 @@ require (
 	github.com/stretchr/testify v1.8.2
 	go.uber.org/goleak v1.2.1
 	golang.org/x/oauth2 v0.7.0
-	google.golang.org/api v0.120.0
+	google.golang.org/api v0.121.0
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
 )
 
@@ -20,7 +20,7 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/s2a-go v0.1.2 // indirect
+	github.com/google/s2a-go v0.1.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
