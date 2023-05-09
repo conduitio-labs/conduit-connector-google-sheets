@@ -8,7 +8,7 @@ require (
 	github.com/stretchr/testify v1.8.2
 	go.uber.org/goleak v1.2.1
 	golang.org/x/oauth2 v0.7.0
-	google.golang.org/api v0.121.0
+	google.golang.org/api v0.122.0
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
 )
 
