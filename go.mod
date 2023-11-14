@@ -1,6 +1,6 @@
 module github.com/conduitio-labs/conduit-connector-google-sheets
 
-go 1.18
+go 1.20
 
 require (
 	github.com/conduitio/conduit-connector-sdk v0.4.0
