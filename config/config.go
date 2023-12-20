@@ -17,7 +17,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -72,7 +72,7 @@ func Parse(config map[string]string) (Config, error) {
 	}
 
 	// parse credentials.json
-	credBytes, err := ioutil.ReadFile(credFile)
+	credBytes, err := os.ReadFile(credFile)
 	if err != nil {
 		return Config{}, fmt.Errorf("unable to read client secret file: %w", err)
 	}
@@ -85,7 +85,7 @@ func Parse(config map[string]string) (Config, error) {
 
 	// parse tokens file
 	var token *oauth2.Token
-	tokenBytes, err := ioutil.ReadFile(tokenFile)
+	tokenBytes, err := os.ReadFile(tokenFile)
 	if err != nil {
 		return Config{}, fmt.Errorf("unable to read tokens file: %w", err)
 	}

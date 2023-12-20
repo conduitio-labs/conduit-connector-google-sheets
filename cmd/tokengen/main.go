@@ -20,7 +20,6 @@ import (
 	"flag"
 	"fmt"
 	"html"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -71,7 +70,7 @@ func init() {
 }
 
 func main() {
-	credBytes, err := ioutil.ReadFile(defaultCredentialFile)
+	credBytes, err := os.ReadFile(defaultCredentialFile)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Unable to read credentials.json file")
 	}
