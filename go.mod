@@ -7,7 +7,7 @@ toolchain go1.21.1
 require (
 	github.com/conduitio/conduit-connector-sdk v0.8.0
 	github.com/golangci/golangci-lint v1.55.2
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/goleak v1.3.0
 	golang.org/x/oauth2 v0.16.0
