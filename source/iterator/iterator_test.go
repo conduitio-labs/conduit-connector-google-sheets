@@ -108,7 +108,7 @@ func TestHasNext(t *testing.T) {
 		response: true,
 	}, {
 		name:     "no record in buffer",
-		fn:       func(c *SheetsIterator) {},
+		fn:       func(*SheetsIterator) {},
 		response: false,
 	}, {
 		name: "record in buffer, tomb dead",
