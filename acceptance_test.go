@@ -132,9 +132,8 @@ func TestAcceptance(t *testing.T) {
 				Connector:         Connector,
 				SourceConfig:      sourceConfig,
 				DestinationConfig: destConfig,
-				BeforeTest: func(t *testing.T) {
-				},
-				GoleakOptions: []goleak.Option{goleak.IgnoreCurrent()},
+				BeforeTest:        func(*testing.T) {},
+				GoleakOptions:     []goleak.Option{goleak.IgnoreCurrent()},
 				AfterTest: func(t *testing.T) {
 					// clear sheet after every test to ensure clean sheet for next test
 					offset = 0
