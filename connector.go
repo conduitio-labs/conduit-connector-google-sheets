@@ -15,10 +15,9 @@
 package googlesheets
 
 import (
-	sdk "github.com/conduitio/conduit-connector-sdk"
-
 	"github.com/conduitio-labs/conduit-connector-google-sheets/destination"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source"
+	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
 var Connector = sdk.Connector{

@@ -47,7 +47,7 @@ type Config struct {
 	// In case of USER_ENTERED, the data is inserted similar to data insertion from browser
 	// In RAW, the data is inserted without any parsing
 	ValueInputOption string
-	MaxRetries       uint64
+	MaxRetries       int64
 }
 
 // Parse attempts to parse the configurations into a Config struct that Destination could utilize
@@ -78,8 +78,8 @@ func Parse(cfg map[string]string) (Config, error) {
 		retriesString = defaultMaxRetries
 	}
 
-	retries, err := strconv.ParseUint(retriesString, 10, 64)
-	if err != nil {
+	retries, err := strconv.ParseInt(retriesString, 10, 64)
+	if err != nil || retries < 0 {
 		return Config{}, fmt.Errorf(
 			"%q config value should be a positive integer",
 			KeyMaxRetries,

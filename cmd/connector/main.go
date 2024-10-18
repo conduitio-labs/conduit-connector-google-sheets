@@ -15,9 +15,8 @@
 package main
 
 import (
-	sdk "github.com/conduitio/conduit-connector-sdk"
-
 	gs "github.com/conduitio-labs/conduit-connector-google-sheets"
+	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
 func main() {

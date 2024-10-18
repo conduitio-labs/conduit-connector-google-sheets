@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	sdk "github.com/conduitio/conduit-connector-sdk"
+	"github.com/conduitio/conduit-commons/opencdc"
 )
 
 type SheetPosition struct {
@@ -27,8 +27,8 @@ type SheetPosition struct {
 	SheetID       int64  `json:"sheet_id"`
 }
 
-// ParseRecordPosition is used to parse the sdk.Position to SheetPosition type
-func ParseRecordPosition(p sdk.Position) (SheetPosition, error) {
+// ParseRecordPosition is used to parse the opencdc.Position to SheetPosition type
+func ParseRecordPosition(p opencdc.Position) (SheetPosition, error) {
 	var recordPosition SheetPosition
 
 	if p == nil {
@@ -41,11 +41,11 @@ func ParseRecordPosition(p sdk.Position) (SheetPosition, error) {
 	return recordPosition, nil
 }
 
-// RecordPosition converts the SheetPosition to sdk.Position to be returned in sdk.Record
-func (s SheetPosition) RecordPosition() sdk.Position {
+// RecordPosition converts the SheetPosition to opencdc.Position to be returned in opencdc.Record
+func (s SheetPosition) RecordPosition() opencdc.Position {
 	pos, err := json.Marshal(s)
 	if err != nil {
-		return sdk.Position{}
+		return opencdc.Position{}
 	}
 	return pos
 }

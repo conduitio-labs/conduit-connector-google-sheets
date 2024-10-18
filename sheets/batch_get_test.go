@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	sdk "github.com/conduitio/conduit-connector-sdk"
+	"github.com/conduitio/conduit-commons/opencdc"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"
@@ -89,19 +89,19 @@ func TestBatchReader_valueRangesToRecords(t *testing.T) {
 	out, err := br.valueRangesToRecords(in, 10)
 	assert.NoError(t, err)
 
-	want := []sdk.Record{
+	want := []opencdc.Record{
 		{
 
-			Operation: sdk.OperationSnapshot,
-			Position:  sdk.Position(`{"row_offset":11,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
-			Key:       sdk.RawData(`11`),
-			Payload:   sdk.Change{After: sdk.RawData(`["iqmQgVHVFVpPvpDE0byR5p1T5PUp2cI1","UB3Io7g5OotmBHfcm77CHeGQ5PoZeYp1","mZTcV547WwIwHROkNAT9x8yEGiV4ne8z","FB6VpQxEUwEm8mGYePvJhnO8gtbVEmsC"]`)},
+			Operation: opencdc.OperationSnapshot,
+			Position:  opencdc.Position(`{"row_offset":11,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
+			Key:       opencdc.RawData(`11`),
+			Payload:   opencdc.Change{After: opencdc.RawData(`["iqmQgVHVFVpPvpDE0byR5p1T5PUp2cI1","UB3Io7g5OotmBHfcm77CHeGQ5PoZeYp1","mZTcV547WwIwHROkNAT9x8yEGiV4ne8z","FB6VpQxEUwEm8mGYePvJhnO8gtbVEmsC"]`)},
 		}, {
 
-			Operation: sdk.OperationSnapshot,
-			Position:  sdk.Position(`{"row_offset":12,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
-			Key:       sdk.RawData(`12`),
-			Payload:   sdk.Change{After: sdk.RawData(`["bE7DlmbAEvHpxSmKJrVNL56lH2RkD6Cj","TpDm60cyptSfI2vRX1NgoHFxxAKBjFRB","B3iRkGlbFCu2A8Hy3d0Ln6TqU0HO8rTT","lTDJbi7FZPu9OrpFsz14X6msCdONz9a2"]`)},
+			Operation: opencdc.OperationSnapshot,
+			Position:  opencdc.Position(`{"row_offset":12,"spreadsheet_id":"dummy_spreadsheet","sheet_id":1234}`),
+			Key:       opencdc.RawData(`12`),
+			Payload:   opencdc.Change{After: opencdc.RawData(`["bE7DlmbAEvHpxSmKJrVNL56lH2RkD6Cj","TpDm60cyptSfI2vRX1NgoHFxxAKBjFRB","B3iRkGlbFCu2A8Hy3d0Ln6TqU0HO8rTT","lTDJbi7FZPu9OrpFsz14X6msCdONz9a2"]`)},
 		},
 	}
 	for i := range out {

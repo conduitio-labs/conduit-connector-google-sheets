@@ -22,7 +22,8 @@ import (
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/iterator"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
-
+	cconfig "github.com/conduitio/conduit-commons/config"
+	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
@@ -36,52 +37,49 @@ type Source struct {
 
 type Iterator interface {
 	HasNext() bool
-	Next(ctx context.Context) (sdk.Record, error)
+	Next(ctx context.Context) (opencdc.Record, error)
 	Stop(ctx context.Context)
 }
 
 func NewSource() sdk.Source {
-	return &Source{}
+	return sdk.SourceWithMiddleware(&Source{}, sdk.DefaultSourceMiddleware()...)
 }
 
-// Parameters returns a map of named sdk.Parameters that describe how to configure the Source.
-func (s *Source) Parameters() map[string]sdk.Parameter {
-	return map[string]sdk.Parameter{
+// Parameters returns a map of named config.Parameters that describe how to configure the Source.
+func (s *Source) Parameters() cconfig.Parameters {
+	return map[string]cconfig.Parameter{
 		config.KeyCredentialsFile: {
 			Default:     "",
-			Required:    true,
 			Description: "path to credentials.json file used",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		config.KeyTokensFile: {
 			Default:     "",
-			Required:    true,
 			Description: "path to token.json file containing a json with atleast refresh_token.",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		config.KeySheetURL: {
 			Default:     "",
-			Required:    true,
 			Description: "Google sheet url to fetch the records from",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		KeyPollingPeriod: {
 			Default:     "6s",
-			Required:    false,
 			Description: "Time interval for consecutive fetching data.",
 		},
 		KeyDateTimeRenderOption: {
 			Default:     "FORMATTED_STRING",
-			Required:    false,
 			Description: "Format of the Date/time related values. Valid values: SERIAL_NUMBER, FORMATTED_STRING",
 		},
 		KeyValueRenderOption: {
 			Default:     "FORMATTED_VALUE",
-			Required:    false,
 			Description: "Format of the dynamic/reference data. Valid values: FORMATTED_VALUE, UNFORMATTED_VALUE, FORMULA",
 		},
 	}
 }
 
 // Configure validates the passed config and prepares the source connector
-func (s *Source) Configure(_ context.Context, cfg map[string]string) error {
+func (s *Source) Configure(_ context.Context, cfg cconfig.Config) error {
 	sheetsConfig, err := Parse(cfg)
 	if err != nil {
 		return fmt.Errorf("error parsing source config: %w", err)
@@ -91,7 +89,7 @@ func (s *Source) Configure(_ context.Context, cfg map[string]string) error {
 }
 
 // Open prepare the plugin to start sending records from the given position
-func (s *Source) Open(ctx context.Context, rp sdk.Position) error {
+func (s *Source) Open(ctx context.Context, rp opencdc.Position) error {
 	pos, err := position.ParseRecordPosition(rp)
 	if err != nil {
 		return fmt.Errorf("couldn't parse position: %w", err)
@@ -116,16 +114,16 @@ func (s *Source) Open(ctx context.Context, rp sdk.Position) error {
 }
 
 // Read gets the next object
-func (s *Source) Read(ctx context.Context) (sdk.Record, error) {
+func (s *Source) Read(ctx context.Context) (opencdc.Record, error) {
 	if !s.iterator.HasNext() {
-		return sdk.Record{}, sdk.ErrBackoffRetry
+		return opencdc.Record{}, sdk.ErrBackoffRetry
 	}
 
 	r, err := s.iterator.Next(ctx)
 	if err != nil {
 		// Next will return context canceled error, to signal graceful stop, as expected by conduit server
 		// in case of other error wrapped errors will be returned
-		return sdk.Record{}, err
+		return opencdc.Record{}, err
 	}
 	return r, nil
 }
@@ -141,7 +139,7 @@ func (s *Source) Teardown(ctx context.Context) error {
 
 // Ack is called by the conduit server after the record has been successfully processed by all destination connectors
 // We do not need to send any ack to Google sheets as we poll the Sheets API for data, so there is no data to be ack'd
-func (s *Source) Ack(ctx context.Context, tp sdk.Position) error {
+func (s *Source) Ack(ctx context.Context, tp opencdc.Position) error {
 	pos, err := position.ParseRecordPosition(tp)
 	if err != nil {
 		sdk.Logger(ctx).Error().Err(err).Msg("invalid position received")
