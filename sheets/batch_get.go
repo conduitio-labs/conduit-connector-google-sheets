@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
-
+	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/googleapi"
@@ -82,7 +82,7 @@ func NewBatchReader(ctx context.Context, args BatchReaderArgs) (*BatchReader, er
 
 // GetSheetRecords returns the list of records up to a maximum of 1000 rows(default limit)
 // added after the row offset of last successfully read record
-func (b *BatchReader) GetSheetRecords(ctx context.Context, offset int64) ([]sdk.Record, error) {
+func (b *BatchReader) GetSheetRecords(ctx context.Context, offset int64) ([]opencdc.Record, error) {
 	if b.nextRun.After(time.Now()) {
 		return nil, nil
 	}
@@ -125,8 +125,8 @@ func (b *BatchReader) getDataFilter(offset int64) *sheets.BatchGetValuesByDataFi
 	}
 }
 
-func (b *BatchReader) valueRangesToRecords(valueRanges []*sheets.MatchedValueRange, offset int64) ([]sdk.Record, error) {
-	records := make([]sdk.Record, 0)
+func (b *BatchReader) valueRangesToRecords(valueRanges []*sheets.MatchedValueRange, offset int64) ([]opencdc.Record, error) {
+	records := make([]opencdc.Record, 0)
 
 	// As we can fetch multiple ranges in one BatchGetByDataFilter request
 	// iterate over all the value ranges fetched from the Google sheet BatchGet API request
@@ -150,11 +150,11 @@ func (b *BatchReader) valueRangesToRecords(valueRanges []*sheets.MatchedValueRan
 				SheetID:       b.sheetID,
 			}
 
-			metadata := sdk.Metadata{}
+			metadata := opencdc.Metadata{}
 			metadata.SetCreatedAt(time.Now())
 
 			record := sdk.Util.Source.NewRecordSnapshot(lastRowPosition.RecordPosition(), metadata,
-				sdk.RawData(fmt.Sprintf("%d", rowOffset)), sdk.RawData(rawData))
+				opencdc.RawData(fmt.Sprintf("%d", rowOffset)), opencdc.RawData(rawData))
 
 			records = append(records, record)
 		}

@@ -21,7 +21,7 @@ import (
 	"net/url"
 	"testing"
 
-	sdk "github.com/conduitio/conduit-connector-sdk"
+	"github.com/conduitio/conduit-commons/opencdc"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"
@@ -66,7 +66,7 @@ func TestWriter_Succeeds(t *testing.T) {
 		valueInputOption: "USER_ENTERED",
 	}
 
-	i, err := writer.Write(ctx, []sdk.Record{{Payload: sdk.Change{After: sdk.RawData(`["1","2","3","4"]`)}}})
+	i, err := writer.Write(ctx, []opencdc.Record{{Payload: opencdc.Change{After: opencdc.RawData(`["1","2","3","4"]`)}}})
 	assert.NoError(t, err)
 	assert.Equal(t, 1, i)
 }
@@ -94,7 +94,7 @@ func TestWriter_429(t *testing.T) {
 		valueInputOption: "USER_ENTERED",
 		maxRetries:       2,
 	}
-	i, err := writer.Write(ctx, []sdk.Record{{Payload: sdk.Change{After: sdk.RawData(`["1","2","3","4"]`)}}})
+	i, err := writer.Write(ctx, []opencdc.Record{{Payload: opencdc.Change{After: opencdc.RawData(`["1","2","3","4"]`)}}})
 	assert.EqualError(t, err, "rate limit exceeded, retries: 2, error: googleapi: got HTTP response code 429 with body: {}")
 	assert.Equal(t, 0, i)
 }

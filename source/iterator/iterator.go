@@ -22,7 +22,7 @@ import (
 
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
-
+	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"gopkg.in/tomb.v2"
 )
@@ -37,10 +37,10 @@ type SheetsIterator struct {
 	// ticker is used to poll for new data in regular intervals
 	ticker *time.Ticker
 	// caches keeps the slice of records fetched from one google sheet API call
-	caches chan []sdk.Record
+	caches chan []opencdc.Record
 	// buffer is subscribed by Next function to read for new data
 	// and block till new data becomes available, in case all the records have been read
-	buffer chan sdk.Record
+	buffer chan opencdc.Record
 }
 
 // NewSheetsIterator creates a new instance of sheets iterator and starts polling google sheets api for new changes
@@ -61,9 +61,9 @@ func NewSheetsIterator(ctx context.Context,
 		tomb:         tmbWithCtx,
 		ticker:       time.NewTicker(args.PollingPeriod),
 		// keeping the length as 1 to be able to have 2nd cache of records ready when the first batch of records are successfully read
-		caches: make(chan []sdk.Record, 1),
+		caches: make(chan []opencdc.Record, 1),
 		// keeping the buffer size as one, to enable checking the availability of records using len() function on channel
-		buffer: make(chan sdk.Record, 1),
+		buffer: make(chan opencdc.Record, 1),
 	}
 
 	cdc.tomb.Go(cdc.startIterator(ctx))
@@ -130,16 +130,16 @@ func (c *SheetsIterator) HasNext() bool {
 
 // Next returns the next record in buffer and error in case there are no more records
 // and there was an error leading to tomb dying or context was cancelled
-func (c *SheetsIterator) Next(ctx context.Context) (sdk.Record, error) {
+func (c *SheetsIterator) Next(ctx context.Context) (opencdc.Record, error) {
 	// block till new records become available
 	// or no records are available and application is stopped or go routines die
 	select {
 	case rec := <-c.buffer:
 		return rec, nil
 	case <-c.tomb.Dying():
-		return sdk.Record{}, c.tomb.Err()
+		return opencdc.Record{}, c.tomb.Err()
 	case <-ctx.Done():
-		return sdk.Record{}, ctx.Err()
+		return opencdc.Record{}, ctx.Err()
 	}
 }
 

@@ -22,7 +22,7 @@ import (
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/iterator"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
-
+	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
@@ -36,7 +36,7 @@ type Source struct {
 
 type Iterator interface {
 	HasNext() bool
-	Next(ctx context.Context) (sdk.Record, error)
+	Next(ctx context.Context) (opencdc.Record, error)
 	Stop(ctx context.Context)
 }
 
@@ -44,9 +44,9 @@ func NewSource() sdk.Source {
 	return &Source{}
 }
 
-// Parameters returns a map of named sdk.Parameters that describe how to configure the Source.
-func (s *Source) Parameters() map[string]sdk.Parameter {
-	return map[string]sdk.Parameter{
+// Parameters returns a map of named config.Parameters that describe how to configure the Source.
+func (s *Source) Parameters() config.Parameters {
+	return map[string]config.Parameter{
 		config.KeyCredentialsFile: {
 			Default:     "",
 			Required:    true,
@@ -81,7 +81,7 @@ func (s *Source) Parameters() map[string]sdk.Parameter {
 }
 
 // Configure validates the passed config and prepares the source connector
-func (s *Source) Configure(_ context.Context, cfg map[string]string) error {
+func (s *Source) Configure(_ context.Context, cfg config.Config) error {
 	sheetsConfig, err := Parse(cfg)
 	if err != nil {
 		return fmt.Errorf("error parsing source config: %w", err)
@@ -91,7 +91,7 @@ func (s *Source) Configure(_ context.Context, cfg map[string]string) error {
 }
 
 // Open prepare the plugin to start sending records from the given position
-func (s *Source) Open(ctx context.Context, rp sdk.Position) error {
+func (s *Source) Open(ctx context.Context, rp opencdc.Position) error {
 	pos, err := position.ParseRecordPosition(rp)
 	if err != nil {
 		return fmt.Errorf("couldn't parse position: %w", err)
@@ -116,16 +116,16 @@ func (s *Source) Open(ctx context.Context, rp sdk.Position) error {
 }
 
 // Read gets the next object
-func (s *Source) Read(ctx context.Context) (sdk.Record, error) {
+func (s *Source) Read(ctx context.Context) (opencdc.Record, error) {
 	if !s.iterator.HasNext() {
-		return sdk.Record{}, sdk.ErrBackoffRetry
+		return opencdc.Record{}, sdk.ErrBackoffRetry
 	}
 
 	r, err := s.iterator.Next(ctx)
 	if err != nil {
 		// Next will return context canceled error, to signal graceful stop, as expected by conduit server
 		// in case of other error wrapped errors will be returned
-		return sdk.Record{}, err
+		return opencdc.Record{}, err
 	}
 	return r, nil
 }
@@ -141,7 +141,7 @@ func (s *Source) Teardown(ctx context.Context) error {
 
 // Ack is called by the conduit server after the record has been successfully processed by all destination connectors
 // We do not need to send any ack to Google sheets as we poll the Sheets API for data, so there is no data to be ack'd
-func (s *Source) Ack(ctx context.Context, tp sdk.Position) error {
+func (s *Source) Ack(ctx context.Context, tp opencdc.Position) error {
 	pos, err := position.ParseRecordPosition(tp)
 	if err != nil {
 		sdk.Logger(ctx).Error().Err(err).Msg("invalid position received")

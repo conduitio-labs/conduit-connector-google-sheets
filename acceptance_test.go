@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
+	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"go.uber.org/goleak"
 	"google.golang.org/api/option"
@@ -151,17 +152,17 @@ type AcceptanceTestDriver struct {
 
 // GenerateRecord overrides the pre-defined generate record function to generate the
 // records in required google sheets compatible format.
-func (d AcceptanceTestDriver) GenerateRecord(*testing.T, sdk.Operation) sdk.Record {
+func (d AcceptanceTestDriver) GenerateRecord(*testing.T, opencdc.Operation) opencdc.Record {
 	payload := fmt.Sprintf(`["%s","%s","%s","%s"]`, d.randString(32), d.randString(32),
 		d.randString(32), d.randString(32))
 	offset++
-	return sdk.Record{
-		Operation: sdk.OperationSnapshot,
-		Position: sdk.Position(fmt.Sprintf(`{"row_offset":%v, "spreadsheet_id":%v, "sheet_id":%v}`, offset,
+	return opencdc.Record{
+		Operation: opencdc.OperationSnapshot,
+		Position: opencdc.Position(fmt.Sprintf(`{"row_offset":%v, "spreadsheet_id":%v, "sheet_id":%v}`, offset,
 			spreadsheetID, sheetID)),
 		Metadata: nil,
-		Key:      sdk.RawData(fmt.Sprintf("%v", offset)),
-		Payload:  sdk.Change{After: sdk.RawData(payload)},
+		Key:      opencdc.RawData(fmt.Sprintf("%v", offset)),
+		Payload:  opencdc.Change{After: opencdc.RawData(payload)},
 	}
 }
 

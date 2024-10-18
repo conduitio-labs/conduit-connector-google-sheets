@@ -22,6 +22,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/googleapi"
@@ -67,7 +68,7 @@ func NewWriter(
 }
 
 // Write function writes the records to google sheet
-func (w *Writer) Write(ctx context.Context, records []sdk.Record) (int, error) {
+func (w *Writer) Write(ctx context.Context, records []opencdc.Record) (int, error) {
 	rows := make([][]any, 0)
 
 	for i := range records {
@@ -77,7 +78,7 @@ func (w *Writer) Write(ctx context.Context, records []sdk.Record) (int, error) {
 		)
 
 		// destination connector doesn't support update or delete operations.
-		if records[i].Operation == sdk.OperationDelete || records[i].Operation == sdk.OperationUpdate {
+		if records[i].Operation == opencdc.OperationDelete || records[i].Operation == opencdc.OperationUpdate {
 			continue
 		}
 
@@ -139,7 +140,7 @@ func (w *Writer) Write(ctx context.Context, records []sdk.Record) (int, error) {
 	return len(records), nil
 }
 
-func transformFromRow(data sdk.Data) ([]any, error) {
+func transformFromRow(data opencdc.Data) ([]any, error) {
 	rowArr := make([]interface{}, 0)
 
 	err := json.Unmarshal(data.Bytes(), &rowArr)
@@ -150,7 +151,7 @@ func transformFromRow(data sdk.Data) ([]any, error) {
 	return rowArr, nil
 }
 
-func transformRecordToRow(record sdk.Record) ([]any, error) {
+func transformRecordToRow(record opencdc.Record) ([]any, error) {
 	data, err := structurizeData(record.Payload.After)
 	if err != nil {
 		return nil, fmt.Errorf("structurize data: %w", err)
@@ -177,13 +178,13 @@ func transformRecordToRow(record sdk.Record) ([]any, error) {
 	return row, err
 }
 
-// structurizeData converts sdk.Data to sdk.StructuredData.
-func structurizeData(data sdk.Data) (sdk.StructuredData, error) {
+// structurizeData converts opencdc.Data to opencdc.StructuredData.
+func structurizeData(data opencdc.Data) (opencdc.StructuredData, error) {
 	if data == nil || len(data.Bytes()) == 0 {
 		return nil, nil
 	}
 
-	structuredData := make(sdk.StructuredData)
+	structuredData := make(opencdc.StructuredData)
 	if err := json.Unmarshal(data.Bytes(), &structuredData); err != nil {
 		return nil, fmt.Errorf("unmarshal data into structured data: %w", err)
 	}

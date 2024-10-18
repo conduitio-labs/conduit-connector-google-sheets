@@ -22,8 +22,7 @@ import (
 
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
-
-	sdk "github.com/conduitio/conduit-connector-sdk"
+	"github.com/conduitio/conduit-commons/opencdc"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/tomb.v2"
 )
@@ -73,15 +72,15 @@ func TestFlush(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	tmbWithCtx, _ := tomb.WithContext(ctx)
 	cdc := &SheetsIterator{
-		buffer: make(chan sdk.Record, 1),
-		caches: make(chan []sdk.Record, 1),
+		buffer: make(chan opencdc.Record, 1),
+		caches: make(chan []opencdc.Record, 1),
 		tomb:   tmbWithCtx,
 	}
 	randomErr := errors.New("random error")
 	cdc.tomb.Go(cdc.flush)
 
-	in := sdk.Record{Position: []byte("some_position")}
-	cdc.caches <- []sdk.Record{in}
+	in := opencdc.Record{Position: []byte("some_position")}
+	cdc.caches <- []opencdc.Record{in}
 	for {
 		select {
 		case <-cdc.tomb.Dying():
@@ -103,7 +102,7 @@ func TestHasNext(t *testing.T) {
 	}{{
 		name: "Has next",
 		fn: func(c *SheetsIterator) {
-			c.buffer <- sdk.Record{}
+			c.buffer <- opencdc.Record{}
 		},
 		response: true,
 	}, {
@@ -114,13 +113,13 @@ func TestHasNext(t *testing.T) {
 		name: "record in buffer, tomb dead",
 		fn: func(c *SheetsIterator) {
 			c.tomb.Kill(errors.New("random error"))
-			c.buffer <- sdk.Record{}
+			c.buffer <- opencdc.Record{}
 		},
 		response: true,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cdc := &SheetsIterator{buffer: make(chan sdk.Record, 1), tomb: &tomb.Tomb{}}
+			cdc := &SheetsIterator{buffer: make(chan opencdc.Record, 1), tomb: &tomb.Tomb{}}
 			tt.fn(cdc)
 			res := cdc.HasNext()
 			assert.Equal(t, res, tt.response)
@@ -141,14 +140,14 @@ func TestNext(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	tmbWithCtx, _ := tomb.WithContext(ctx)
 	cdc := &SheetsIterator{
-		buffer: make(chan sdk.Record, 1),
-		caches: make(chan []sdk.Record, 1),
+		buffer: make(chan opencdc.Record, 1),
+		caches: make(chan []opencdc.Record, 1),
 		tomb:   tmbWithCtx,
 	}
 	cdc.tomb.Go(cdc.flush)
 
-	in := sdk.Record{Position: []byte("some_position")}
-	cdc.caches <- []sdk.Record{in}
+	in := opencdc.Record{Position: []byte("some_position")}
+	cdc.caches <- []opencdc.Record{in}
 	out, err := cdc.Next(ctx)
 	assert.NoError(t, err)
 	assert.Equal(t, in, out)

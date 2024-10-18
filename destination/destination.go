@@ -18,10 +18,10 @@ import (
 	"context"
 	"fmt"
 
-	sdk "github.com/conduitio/conduit-connector-sdk"
-
 	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
+	"github.com/conduitio/conduit-commons/opencdc"
+	sdk "github.com/conduitio/conduit-connector-sdk"
 )
 
 // Destination connector
@@ -38,9 +38,9 @@ func NewDestination() sdk.Destination {
 	return &Destination{}
 }
 
-// Parameters returns a map of named sdk.Parameters that describe how to configure the Destination.
-func (d *Destination) Parameters() map[string]sdk.Parameter {
-	return map[string]sdk.Parameter{
+// Parameters returns a map of named config.Parameters that describe how to configure the Destination.
+func (d *Destination) Parameters() config.Parameters {
+	return map[string]config.Parameter{
 		config.KeyCredentialsFile: {
 			Default:     "",
 			Required:    true,
@@ -111,7 +111,7 @@ func (d *Destination) Open(ctx context.Context) error {
 }
 
 // Write writes a record into a Destination.
-func (d *Destination) Write(ctx context.Context, records []sdk.Record) (int, error) {
+func (d *Destination) Write(ctx context.Context, records []opencdc.Record) (int, error) {
 	i, err := d.writer.Write(ctx, records)
 	if err != nil {
 		return i, err
