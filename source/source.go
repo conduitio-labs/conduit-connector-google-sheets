@@ -22,6 +22,7 @@ import (
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/iterator"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/source/position"
+	cconfig "github.com/conduitio/conduit-commons/config"
 	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
@@ -41,47 +42,44 @@ type Iterator interface {
 }
 
 func NewSource() sdk.Source {
-	return &Source{}
+	return sdk.SourceWithMiddleware(&Source{}, sdk.DefaultSourceMiddleware()...)
 }
 
 // Parameters returns a map of named config.Parameters that describe how to configure the Source.
-func (s *Source) Parameters() config.Parameters {
-	return map[string]config.Parameter{
+func (s *Source) Parameters() cconfig.Parameters {
+	return map[string]cconfig.Parameter{
 		config.KeyCredentialsFile: {
 			Default:     "",
-			Required:    true,
 			Description: "path to credentials.json file used",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		config.KeyTokensFile: {
 			Default:     "",
-			Required:    true,
 			Description: "path to token.json file containing a json with atleast refresh_token.",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		config.KeySheetURL: {
 			Default:     "",
-			Required:    true,
 			Description: "Google sheet url to fetch the records from",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		KeyPollingPeriod: {
 			Default:     "6s",
-			Required:    false,
 			Description: "Time interval for consecutive fetching data.",
 		},
 		KeyDateTimeRenderOption: {
 			Default:     "FORMATTED_STRING",
-			Required:    false,
 			Description: "Format of the Date/time related values. Valid values: SERIAL_NUMBER, FORMATTED_STRING",
 		},
 		KeyValueRenderOption: {
 			Default:     "FORMATTED_VALUE",
-			Required:    false,
 			Description: "Format of the dynamic/reference data. Valid values: FORMATTED_VALUE, UNFORMATTED_VALUE, FORMULA",
 		},
 	}
 }
 
 // Configure validates the passed config and prepares the source connector
-func (s *Source) Configure(_ context.Context, cfg config.Config) error {
+func (s *Source) Configure(_ context.Context, cfg cconfig.Config) error {
 	sheetsConfig, err := Parse(cfg)
 	if err != nil {
 		return fmt.Errorf("error parsing source config: %w", err)

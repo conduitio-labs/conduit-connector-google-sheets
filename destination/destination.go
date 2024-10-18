@@ -20,6 +20,7 @@ import (
 
 	"github.com/conduitio-labs/conduit-connector-google-sheets/config"
 	"github.com/conduitio-labs/conduit-connector-google-sheets/sheets"
+	cconfig "github.com/conduitio/conduit-commons/config"
 	"github.com/conduitio/conduit-commons/opencdc"
 	sdk "github.com/conduitio/conduit-connector-sdk"
 )
@@ -35,48 +36,45 @@ type Destination struct {
 }
 
 func NewDestination() sdk.Destination {
-	return &Destination{}
+	return sdk.DestinationWithMiddleware(&Destination{}, sdk.DefaultDestinationMiddleware()...)
 }
 
 // Parameters returns a map of named config.Parameters that describe how to configure the Destination.
-func (d *Destination) Parameters() config.Parameters {
-	return map[string]config.Parameter{
+func (d *Destination) Parameters() cconfig.Parameters {
+	return map[string]cconfig.Parameter{
 		config.KeyCredentialsFile: {
 			Default:     "",
-			Required:    true,
 			Description: "path to credentials.json file used",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		config.KeyTokensFile: {
 			Default:     "",
-			Required:    true,
 			Description: "path to token.json file containing a json with at least refresh_token.",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		config.KeySheetURL: {
 			Default:     "",
-			Required:    true,
 			Description: "Google sheet url to fetch the records from",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		KeySheetName: {
 			Default:     "",
-			Required:    true,
 			Description: "Google sheet name to fetch the records",
+			Validations: []cconfig.Validation{cconfig.ValidationRequired{}},
 		},
 		KeyValueInputOption: {
 			Default:     "USER_ENTERED",
-			Required:    false,
 			Description: "Whether the data be inserted in USER_ENTERED mode or RAW mode",
 		},
 		KeyMaxRetries: {
 			Default:     "3",
-			Required:    false,
 			Description: "Max API retries to be attempted, in case of 429 error, before returning error",
 		},
 	}
 }
 
 // Configure parses and initializes the config.
-func (d *Destination) Configure(_ context.Context,
-	cfg map[string]string) error {
+func (d *Destination) Configure(_ context.Context, cfg cconfig.Config) error {
 	sheetsConfig, err := Parse(cfg)
 	if err != nil {
 		return fmt.Errorf("failed parsing the config: %w", err)

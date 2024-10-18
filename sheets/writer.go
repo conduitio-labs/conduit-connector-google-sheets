@@ -42,9 +42,9 @@ type Writer struct {
 	// valueInputOption defines whether the data is to be inserted in USER_ENTERED mode or RAW mode
 	valueInputOption string
 	// maxRetries is the maximum retries to be made before returning an error, in case of 429(rate-limit exceeded error)
-	maxRetries uint64
+	maxRetries int64
 	// the number of unsuccessful retries made with error 429, since last successful data write
-	retryCount uint64
+	retryCount int64
 }
 
 func NewWriter(
@@ -52,7 +52,7 @@ func NewWriter(
 	oauthCfg *oauth2.Config,
 	token *oauth2.Token,
 	spreadsheetID, sheetName, valueInputOption string,
-	retries uint64,
+	retries int64,
 ) (*Writer, error) {
 	sheetService, err := sheets.NewService(ctx, option.WithHTTPClient(oauthCfg.Client(ctx, token)))
 	if err != nil {
