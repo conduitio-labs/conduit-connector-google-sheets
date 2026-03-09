@@ -1,6 +1,6 @@
 module github.com/conduitio-labs/conduit-connector-google-sheets
 
-go 1.24.2
+go 1.25.0
 
 require (
 	github.com/conduitio/conduit-commons v0.6.0
@@ -8,7 +8,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/goleak v1.3.0
-	golang.org/x/oauth2 v0.35.0
+	golang.org/x/oauth2 v0.36.0
 	google.golang.org/api v0.267.0
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
 )
